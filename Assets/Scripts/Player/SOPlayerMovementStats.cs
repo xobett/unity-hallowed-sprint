@@ -1,3 +1,5 @@
+using System;
+using Unity.Mathematics;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "SOPlayerMovementStats", menuName = "Scriptable Objects/SOPlayerMovementStats")]
@@ -52,4 +54,24 @@ public class SOPlayerMovementStats : ScriptableObject
     [Range(5, 100)] public int ArcResolution = 20;
     [Range(0, 500)] public int VisualizationSteps = 90;
 
+    public float Gravity { get; private set; }
+    public float InitialJumpVelocity { get; private set; }
+    public float AdjustedJumpHeight { get; private set; }
+
+    void OnValidate()
+    {
+        CalculateValues();
+    }
+
+    void OnEnable()
+    {
+        CalculateValues();
+    }
+
+    private void CalculateValues()
+    {
+        AdjustedJumpHeight = JumpHeight * JumpHeightCompensationFactor;
+        Gravity = -(2f * AdjustedJumpHeight) / Mathf.Pow(TimeTillJumpApex, 2f);
+        InitialJumpVelocity = Math.Abs(Gravity) * TimeTillJumpApex;
+    }
 }

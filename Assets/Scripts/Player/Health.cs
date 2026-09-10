@@ -1,10 +1,14 @@
-using System;
 using UnityEngine;
 
-class Health
+class Health : MonoBehaviour
 {
-    [SerializeField] private float health;
+    [SerializeField] private float health = 100f;
     private const float maxHealth = 100f;
+
+    void Start()
+    {
+        health = maxHealth;
+    }
 
     public void Heal()
     {
