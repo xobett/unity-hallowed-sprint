@@ -18,7 +18,7 @@ public class Character2DController : MonoBehaviour
     bool isFalling;
     float fastFallTime;
     float fastFallReleaseSpeed;
-    int jumpsUsed;
+    [SerializeField] int jumpsUsed;
 
     float apexPoint; // highest point of a jump
     float timePastApexThreshold;
@@ -28,6 +28,8 @@ public class Character2DController : MonoBehaviour
     bool jumpReleasedDuringBuffer;
 
     float coyoteTimer; // used to jump slightly after leaving a platform
+
+    bool bumpedHead;
 
     [Header("Colliders")]
     [SerializeField] private BoxCollider2D bodyCollider;
@@ -170,7 +172,88 @@ public class Character2DController : MonoBehaviour
 
     void Jump()
     {
+        // apply gravity while jumping
+        if (isJumping)
+        {
+            // check for head bump
+            if (bumpedHead)
+            {
+                isFastFalling = true;
+            }
 
+            // gravity on ascending
+            if (verticalVelocity >= 0f)
+            {
+                // apex controls
+                apexPoint = Mathf.InverseLerp(movementStats.InitialJumpVelocity, 0f, verticalVelocity);
+                if (apexPoint > movementStats.ApexThreshold)
+                {
+                    if (!isPastApexThreshold)
+                    {
+                        isPastApexThreshold = true;
+                        timePastApexThreshold = 0f;
+                    }
+
+                    if (isPastApexThreshold)
+                    {
+                        timePastApexThreshold += Time.fixedDeltaTime;
+                        if (timePastApexThreshold < movementStats.ApexHangTime)
+                        {
+                            verticalVelocity = 0f;
+                        }
+                        else
+                        {
+                            verticalVelocity = -0.01f;
+                        }
+                    }
+                }
+                // gravity on ascending but not past apex threshold
+                else
+                {
+                    verticalVelocity += movementStats.Gravity * Time.fixedDeltaTime;
+                    if (isPastApexThreshold) isPastApexThreshold = false;
+                }
+            }
+
+            //gravity on descending
+            else if (!isFastFalling)
+            {
+                verticalVelocity += movementStats.Gravity * movementStats.GravityOnReleaseMultiplier * Time.fixedDeltaTime;
+            }
+
+            else if (verticalVelocity < 0f)
+            {
+                if (!isFalling) isFalling = true;
+            }
+        }
+        // jump cut
+        if (isFastFalling)
+        {
+            if (fastFallTime >= movementStats.TimeForUpwardsCancel)
+            {
+                verticalVelocity += movementStats.Gravity * movementStats.GravityOnReleaseMultiplier * Time.fixedDeltaTime;
+            }
+            else if (fastFallTime < movementStats.TimeForUpwardsCancel)
+            {
+                verticalVelocity = Mathf.Lerp(fastFallReleaseSpeed, 0f, (fastFallTime / movementStats.TimeForUpwardsCancel));
+            }
+
+            fastFallTime += Time.fixedDeltaTime;
+        }
+
+        // normal gravity when falling
+        if (!isGrounded && !isJumping)
+        {
+            if (!isFalling) isFalling = true;
+
+            verticalVelocity += movementStats.Gravity * Time.fixedDeltaTime;
+        }
+
+
+        // clamp fall speed
+        verticalVelocity = Mathf.Clamp(verticalVelocity, -movementStats.MaxFallSpeed, 50f);
+
+        rb.linearVelocity = new Vector2(rb.linearVelocityX, verticalVelocity);
     }
 
     #region Collisions
