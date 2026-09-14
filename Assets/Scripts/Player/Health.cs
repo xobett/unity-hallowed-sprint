@@ -27,6 +27,11 @@ class Health : MonoBehaviour
 
     void Die()
     {
-        // player dies
+
+    }
+
+    public void Kill()
+    {
+        Die();
     }
 }
