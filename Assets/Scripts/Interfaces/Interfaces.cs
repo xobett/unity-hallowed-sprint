@@ -12,6 +12,6 @@ interface IDamageable
 
 interface IRespawnable
 {
-  Transform LastCheckpoint { get; set; }
+  Vector3 LastCheckpoint { get; set; }
   void Respawn();
 }

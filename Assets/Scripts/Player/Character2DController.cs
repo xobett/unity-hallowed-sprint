@@ -111,6 +111,16 @@ public class Character2DController : MonoBehaviour
 
     void Gravity()
     {
+        float gravity = 0f;
+        // make jump more responsive and less constant
+        // if we are falling, make gravity stronger
+        // if (verticalVelocity < 0) {
+        //     gravity = movementStats.Gravity * movementStats.NoReleaseMultiplier;
+        // }
+        // else if (verticalVelocity > 0 && input.Jump.notPressed XD) {
+        //     gravity = movementStats.Gravity * movementSTats.FastReleaseMultiplier;
+        // }
+
         if (verticalVelocity <= 0 && isGrounded)
         {
             isJumping = false;
