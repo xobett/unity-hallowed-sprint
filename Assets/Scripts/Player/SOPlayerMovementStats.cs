@@ -31,9 +31,9 @@ public class SOPlayerMovementStats : ScriptableObject
     public float TimeTillJumpApex = 0.35f;
 
     // gravity multiplier on fast jump
-    // public float FastReleaseMultiplier = 1.5f;
+    public float OnJumpReleaseMultiplier = 1.5f;
     // gravity multiplier on fast jump
-    // public float NoReleaseMultiplier = 2.5f;
+    public float OnFallMultiplier = 2.5f;
 
     public float Gravity { get; private set; }
     public float InitialJumpVelocity { get; private set; }

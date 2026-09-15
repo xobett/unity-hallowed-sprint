@@ -22,8 +22,10 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   GroundDetectionRayLength: 0.02
-  JumpHeight: 1.2658018
+  JumpHeight: 1.9
   JumpHeightCompensationFactor: 1.054
   JumpBufferTime: 0.125
   MaxFallSpeed: 26
-  TimeTillJumpApex: 0.2
+  TimeTillJumpApex: 0.3
+  OnJumpReleaseMultiplier: 2.47
+  OnFallMultiplier: 2.32
